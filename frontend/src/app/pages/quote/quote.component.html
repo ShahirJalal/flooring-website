@@ -1,0 +1,94 @@
+<div class="quote-container">
+    <header class="quote-header">
+        <h1>Request a Quote</h1>
+        <p>Fill out the form below and we'll get back to you with a free estimate</p>
+    </header>
+
+    <div class="quote-form-container">
+        <form (ngSubmit)="onSubmit()" #quoteForm="ngForm" class="quote-form">
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name*</label>
+                        <input type="text" id="name" name="name" [(ngModel)]="quoteData.name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email*</label>
+                        <input type="email" id="email" name="email" [(ngModel)]="quoteData.email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number*</label>
+                        <input type="tel" id="phone" name="phone" [(ngModel)]="quoteData.phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" [(ngModel)]="quoteData.address">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Details -->
+            <div class="form-section">
+                <h2>Project Details</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="floorType">Floor Type*</label>
+                        <select id="floorType" name="floorType" [(ngModel)]="quoteData.floorType" required>
+                            <option value="">Select Floor Type</option>
+                            <option value="hardwood">Hardwood</option>
+                            <option value="laminate">Laminate</option>
+                            <option value="vinyl">Vinyl</option>
+                            <option value="repair">Repair Work</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="roomType">Room Type*</label>
+                        <select id="roomType" name="roomType" [(ngModel)]="quoteData.roomType" required>
+                            <option value="">Select Room Type</option>
+                            <option value="living">Living Room</option>
+                            <option value="bedroom">Bedroom</option>
+                            <option value="kitchen">Kitchen</option>
+                            <option value="bathroom">Bathroom</option>
+                            <option value="office">Office</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="squareFeet">Square Feet*</label>
+                        <input type="number" id="squareFeet" name="squareFeet" [(ngModel)]="quoteData.squareFeet"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeline">Preferred Timeline</label>
+                        <select id="timeline" name="timeline" [(ngModel)]="quoteData.timeline">
+                            <option value="">Select Timeline</option>
+                            <option value="asap">As Soon As Possible</option>
+                            <option value="1month">Within 1 Month</option>
+                            <option value="3months">Within 3 Months</option>
+                            <option value="planning">Just Planning</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="form-section">
+                <h2>Additional Information</h2>
+                <div class="form-group">
+                    <label for="message">Project Details & Special Requirements</label>
+                    <textarea id="message" name="message" [(ngModel)]="quoteData.message" rows="5"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" [disabled]="!quoteForm.form.valid">Submit Quote Request</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1>Admin Dashboard</h1>
+            <button class="logout-btn" (click)="logout()">Logout</button>
+        </div>
+        <div class="tab-buttons">
+            <button [class.active]="activeTab === 'contacts'" (click)="activeTab = 'contacts'">Contact Messages</button>
+            <button [class.active]="activeTab === 'quotes'" (click)="activeTab = 'quotes'">Quote Requests</button>
+        </div>
+    </header>
+
+    <!-- Contacts Table -->
+    <div class="table-container" *ngIf="activeTab === 'contacts'">
+        <h2>Contact Messages</h2>
+        <div class="table-actions">
+            <div class="search">
+                <input type="text" [(ngModel)]="contactSearchTerm" placeholder="Search contacts..."
+                    (input)="searchContacts()">
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let contact of filteredContacts">
+                    <td>{{contact.createdAt | date:'short'}}</td>
+                    <td>{{contact.name}}</td>
+                    <td>{{contact.email}}</td>
+                    <td>{{contact.phone}}</td>
+                    <td>{{contact.subject}}</td>
+                    <td class="message-cell">{{contact.message}}</td>
+                    <td>
+                        <span class="status" [class.completed]="contact.status === 'completed'">
+                            {{contact.status}}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="status-btn" (click)="toggleStatus(contact)">
+                            {{contact.status === 'completed' ? 'Mark Incomplete' : 'Mark Complete'}}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Quotes Table -->
+    <div class="table-container" *ngIf="activeTab === 'quotes'">
+        <h2>Quote Requests</h2>
+        <div class="table-actions">
+            <div class="search">
+                <input type="text" [(ngModel)]="quoteSearchTerm" placeholder="Search quotes..."
+                    (input)="searchQuotes()">
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Floor Type</th>
+                    <th>Room Type</th>
+                    <th>Square Feet</th>
+                    <th>Timeline</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let quote of filteredQuotes">
+                    <td>{{quote.createdAt | date:'short'}}</td>
+                    <td>{{quote.name}}</td>
+                    <td>{{quote.email}}</td>
+                    <td>{{quote.phone}}</td>
+                    <td>{{quote.floorType}}</td>
+                    <td>{{quote.roomType}}</td>
+                    <td>{{quote.squareFeet}}</td>
+                    <td>{{quote.timeline}}</td>
+                    <td>
+                        <span class="status" [class.completed]="quote.status === 'completed'">
+                            {{quote.status}}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="status-btn" (click)="toggleQuoteStatus(quote)">
+                            {{quote.status === 'completed' ? 'Mark Incomplete' : 'Mark Complete'}}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

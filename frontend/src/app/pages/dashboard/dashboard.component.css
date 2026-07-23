@@ -1,0 +1,151 @@
+.dashboard-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tab-buttons button {
+    padding: 0.8rem 1.5rem;
+    border: 2px solid #50C878;
+    background: transparent;
+    color: #50C878;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-buttons button.active {
+    background: #50C878;
+    color: white;
+}
+
+.table-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table-container h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.table-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.search input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 300px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.message-cell {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    background: #ffc107;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.status.completed {
+    background: #28a745;
+}
+
+.status-btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.status-btn:hover {
+    background: #0056b3;
+}
+
+@media (max-width: 1200px) {
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 1000px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .search input {
+        width: 200px;
+    }
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.logout-btn {
+    padding: 0.5rem 1rem;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}

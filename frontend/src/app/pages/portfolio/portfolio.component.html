@@ -1,0 +1,26 @@
+<div class="portfolio-container">
+    <header class="portfolio-header">
+        <h1>Our Work</h1>
+        <p>Browse through some of our recent flooring projects</p>
+    </header>
+
+    <div class="portfolio-filters">
+        <button class="filter-btn" [class.active]="activeFilter === 'all'" (click)="filterProjects('all')">All</button>
+        <button class="filter-btn" [class.active]="activeFilter === 'hardwood'" (click)="filterProjects('hardwood')">Hardwood</button>
+        <button class="filter-btn" [class.active]="activeFilter === 'laminate'" (click)="filterProjects('laminate')">Laminate</button>
+        <button class="filter-btn" [class.active]="activeFilter === 'vinyl'" (click)="filterProjects('vinyl')">Vinyl</button>
+    </div>
+
+    <div class="portfolio-grid">
+        <div class="portfolio-item" *ngFor="let project of filteredProjects">
+            <div class="project-image">
+                <img [src]="project.image" [alt]="project.title">
+                <div class="project-overlay">
+                    <h3>{{project.title}}</h3>
+                    <p>{{project.description}}</p>
+                    <span class="project-category">{{project.category}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
