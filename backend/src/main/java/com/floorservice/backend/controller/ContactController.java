@@ -11,10 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/contacts")
-@CrossOrigin(origins = {
-        "https://flooring-website-frontend-c2dd1b199c2c.herokuapp.com",
-        "http://localhost:4200"
-}, allowCredentials = "true")
 public class ContactController {
 
     private final ContactService contactService;

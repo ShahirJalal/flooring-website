@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {
-        "https://flooring-website-frontend-c2dd1b199c2c.herokuapp.com",
-        "http://localhost:4200"
-}, allowCredentials = "true")
 public class AuthController {
 
     @Autowired
