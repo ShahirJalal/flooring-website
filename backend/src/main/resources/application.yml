@@ -28,8 +28,8 @@ cors:
   max-age: 3600
 
 jwt:
-  secret: ${JWT_SECRET:dev-only-secret-do-not-use-in-production}
+  secret: ${JWT_SECRET}
 
 admin:
-  username: ${ADMIN_USERNAME:admin}
-  password: ${ADMIN_PASSWORD:admin123}
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}
