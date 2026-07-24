@@ -3,7 +3,7 @@ spring:
     name: backend
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/flooring}
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/flooring}
     username: ${DB_USERNAME:flooring}
     password: ${DB_PASSWORD:flooring123}
     driver-class-name: org.postgresql.Driver
