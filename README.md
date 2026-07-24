@@ -5,6 +5,9 @@
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue)
 ![JWT](https://img.shields.io/badge/Auth-JWT-black)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED)
+![Jenkins](https://img.shields.io/badge/Jenkins-CI%2FCD-D24939)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-Tunnel-F38020)
 
 A full-stack lead-generation website for a flooring services business, built with Angular and Spring Boot. Visitors can browse services and a project gallery, submit quote requests and contact messages, which the business owner reviews and manages through a JWT-authenticated admin dashboard.
 
@@ -32,7 +35,13 @@ This was originally built as a client project that was later cancelled before la
 - Spring Security + JWT (jjwt)
 
 ### Database
-- PostgreSQL
+- PostgreSQL 16
+
+### DevOps
+- Docker / Docker Compose
+- Jenkins
+- Nginx (static hosting + reverse proxy)
+- Cloudflare Tunnel
 
 ---
 
@@ -43,7 +52,9 @@ This was originally built as a client project that was later cancelled before la
 - Contact form
 - JWT-based admin login
 - Admin dashboard to view, search, and update the status of contact messages and quote requests
-- RESTful API with CORS configuration for a separately hosted frontend
+- RESTful API, reverse-proxied through Nginx so the frontend and backend share one origin in production
+- Dockerized frontend and backend with Docker Compose orchestration
+- CI/CD via Jenkins
 
 ---
 
@@ -53,15 +64,22 @@ This was originally built as a client project that was later cancelled before la
 flooring-website
 │
 ├── frontend                Angular application
+│   ├── Dockerfile
+│   ├── nginx.conf
 │   └── src/app
 │       ├── pages           home, services, portfolio, contact, quote, login, dashboard
 │       └── shared           header, footer
 │
-└── backend                 Spring Boot application
-    └── src/main/java/com/floorservice/backend
-        ├── controller       AuthController, ContactController, QuoteController
-        ├── model            Admin, Contact, Quote
-        └── config           SecurityConfig, CorsConfig
+├── backend                 Spring Boot application
+│   ├── Dockerfile
+│   └── src/main/java/com/floorservice/backend
+│       ├── controller       AuthController, ContactController, QuoteController
+│       ├── model            Admin, Contact, Quote
+│       └── config           SecurityConfig
+│
+├── docker-compose.yml
+├── Jenkinsfile
+└── README.md
 ```
 
 ---
@@ -87,11 +105,11 @@ git clone https://github.com/ShahirJalal/flooring-website.git
 cd flooring-website
 ```
 
-**Backend** — configure `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, and `FRONTEND_URL` as environment variables, then:
+**Backend** — a local Postgres instance is enough; `DB_URL`, `DB_USERNAME`, and `DB_PASSWORD` default to `localhost:5432/flooring`. Only `JWT_SECRET` and `ADMIN_PASSWORD` are required:
 
 ```bash
 cd backend
-./mvnw spring-boot:run
+JWT_SECRET=dev-secret ADMIN_PASSWORD=dev-password ./mvnw spring-boot:run
 ```
 
 **Frontend**
@@ -104,11 +122,29 @@ ng serve
 
 Frontend runs on `http://localhost:4200`, backend API on `http://localhost:8080`.
 
+**Or with Docker Compose** — builds and runs Postgres, backend, and frontend together:
+
+```bash
+cp .env.example .env   # fill in JWT_SECRET and ADMIN_PASSWORD
+cd backend && ./mvnw clean package -DskipTests && cd ..
+docker compose up --build
+```
+
+Frontend (served by Nginx, proxying `/api` to the backend) is available on `http://localhost:4200`.
+
 ---
 
-## Deployment (planned)
+## Deployment
 
-The intended deployment mirrors the setup used for my [main portfolio](https://github.com/ShahirJalal/shahir-portfolio): containerized with Docker, deployed via Jenkins CI/CD to a self-hosted Ubuntu server, and exposed securely through a Cloudflare Tunnel at `flooring.shahirjalal.com`.
+Deployed the same way as my [main portfolio](https://github.com/ShahirJalal/shahir-portfolio): a Jenkins pipeline (see [Jenkinsfile](Jenkinsfile)) builds the backend jar and frontend bundle, then runs `docker compose up --build -d` on a self-hosted Ubuntu server. Nginx (inside the frontend container) serves the Angular build and reverse-proxies `/api/**` to the backend container, so the app is reachable through a single origin. A Cloudflare Tunnel exposes that origin publicly as `https://flooring.shahirjalal.com`, without opening any inbound ports on the server.
+
+Required environment variables (set via `.env`, see [.env.example](.env.example)):
+
+| Variable | Purpose |
+|---|---|
+| `JWT_SECRET` | Signs admin session JWTs |
+| `CORS_ALLOWED_ORIGINS` | Origins allowed to call the API directly (defaults to the production domain) |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Credentials for the admin dashboard login |
 
 ---
 

@@ -2,6 +2,7 @@ package com.floorservice.backend.config;
 
 import com.floorservice.backend.security.JwtAuthFilter;
 import com.floorservice.backend.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,15 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
+    @Value("${admin.username}")
+    private String adminUsername;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
     @Bean
     public JwtAuthFilter jwtAuthFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
         return new JwtAuthFilter(userDetailsService, jwtUtil);  // Pass both dependencies
@@ -51,10 +61,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "https://flooring-website-frontend-c2dd1b199c2c.herokuapp.com",
-                "http://localhost:4200"
-        ));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(
                 "Authorization",
@@ -94,8 +101,8 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         return new InMemoryUserDetailsManager(
                 User.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin123"))
+                        .username(adminUsername)
+                        .password(passwordEncoder.encode(adminPassword))
                         .roles("ADMIN")
                         .build()
         );
