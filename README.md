@@ -105,12 +105,14 @@ git clone https://github.com/ShahirJalal/flooring-website.git
 cd flooring-website
 ```
 
-**Backend** — a local Postgres instance is enough; `DB_URL`, `DB_USERNAME`, and `DB_PASSWORD` default to `localhost:5432/flooring`. Only `JWT_SECRET` and `ADMIN_PASSWORD` are required:
+**Backend** — a local Postgres instance is enough; `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, and `ADMIN_PASSWORD` all fall back to insecure dev defaults (see `application.yml`) so it runs with no setup:
 
 ```bash
 cd backend
-JWT_SECRET=dev-secret ADMIN_PASSWORD=dev-password ./mvnw spring-boot:run
+./mvnw spring-boot:run
 ```
+
+Running from IntelliJ works the same way — no environment variables need to be configured in the Run Configuration for local development.
 
 **Frontend**
 
@@ -138,7 +140,7 @@ Frontend (served by Nginx, proxying `/api` to the backend) is available on `http
 
 Deployed the same way as my [main portfolio](https://github.com/ShahirJalal/shahir-portfolio): a Jenkins pipeline (see [Jenkinsfile](Jenkinsfile)) builds the backend jar and frontend bundle, then runs `docker compose up --build -d` on a self-hosted Ubuntu server. Nginx (inside the frontend container) serves the Angular build and reverse-proxies `/api/**` to the backend container, so the app is reachable through a single origin. A Cloudflare Tunnel exposes that origin publicly as `https://flooring.shahirjalal.com`, without opening any inbound ports on the server.
 
-Required environment variables (set via `.env`, see [.env.example](.env.example)):
+`JWT_SECRET` and `ADMIN_PASSWORD` fall back to insecure dev defaults for local convenience (see `application.yml`) — production **must** override them via `.env` (see [.env.example](.env.example)):
 
 | Variable | Purpose |
 |---|---|
