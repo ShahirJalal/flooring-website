@@ -40,20 +40,32 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthFilter jwtAuthFilter(UserDetailsService userDetailsService, JwtUtil jwtUtil) {
-        return new JwtAuthFilter(userDetailsService, jwtUtil);  // Pass both dependencies
+        return new JwtAuthFilter(userDetailsService, jwtUtil);
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtAuthFilter jwtAuthFilter) throws Exception {
+
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
+                        // Docker health check
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+
+                        // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // Protected endpoints
                         .requestMatchers("/api/contacts/**", "/api/quotes/**").authenticated()
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                        // Everything else requires authentication
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -61,8 +73,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE",
+                "OPTIONS"
+        ));
         configuration.setAllowedHeaders(Arrays.asList(
                 "Authorization",
                 "Content-Type",
@@ -76,6 +96,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", configuration);
+
         return source;
     }
 
@@ -85,20 +106,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public AuthenticationProvider authenticationProvider(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
+
         return authProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+
         return config.getAuthenticationManager();
     }
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+
         return new InMemoryUserDetailsManager(
                 User.builder()
                         .username(adminUsername)
