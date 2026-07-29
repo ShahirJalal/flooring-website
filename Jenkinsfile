@@ -3,6 +3,11 @@ pipeline {
         label 'home-server'
     }
 
+    options {
+        timestamps()
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
     stages {
 
         stage('Checkout') {
@@ -25,24 +30,31 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    sh 'npm ci'
-                    sh 'npm run build'
+                    sh '''
+                        npm config set fetch-retries 5
+                        npm config set fetch-retry-mintimeout 20000
+                        npm config set fetch-retry-maxtimeout 120000
+                        npm ci
+                        npm run build
+                    '''
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker compose down'
-                sh 'docker compose up -d --build'
+                sh '''
+                    docker compose down || true
+                    docker compose up -d --build
+                '''
             }
         }
 
         stage('Verify Backend') {
             steps {
                 sh '''
-                    timeout 60 sh -c '
-                    until curl -fs http://localhost:8080/actuator/health; do
+                    timeout 120 sh -c '
+                    until curl -fs http://localhost:8081/actuator/health; do
                         echo "Waiting for backend..."
                         sleep 5
                     done
@@ -54,7 +66,7 @@ pipeline {
         stage('Verify Frontend') {
             steps {
                 sh '''
-                    timeout 60 sh -c '
+                    timeout 120 sh -c '
                     until curl -fs http://localhost:4200; do
                         echo "Waiting for frontend..."
                         sleep 5
@@ -67,8 +79,8 @@ pipeline {
 
     post {
         always {
-            sh 'docker image prune -f'
-            sh 'docker builder prune -f'
+            sh 'docker image prune -f || true'
+            sh 'docker builder prune -f || true'
         }
 
         success {
