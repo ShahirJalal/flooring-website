@@ -69,7 +69,7 @@ services:
         condition: service_healthy
 
     ports:
-      - "4200:80"
+      - "8088:80"
 
 volumes:
   flooring_postgres_data:
