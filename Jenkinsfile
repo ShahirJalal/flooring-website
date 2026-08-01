@@ -28,13 +28,29 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                sh '''
-                    docker compose down || true
-                    docker compose up -d --build
-                '''
-            }
-        }
+    steps {
+        sh '''
+            echo "========== CURRENT DIRECTORY =========="
+            pwd
+
+            echo ""
+            echo "========== FILES =========="
+            ls -la
+
+            echo ""
+            echo "========== DOCKER COMPOSE CONFIG =========="
+            docker compose config
+
+            echo ""
+            echo "========== DOCKER COMPOSE DOWN =========="
+            docker compose down || true
+
+            echo ""
+            echo "========== DOCKER COMPOSE UP =========="
+            docker compose up -d --build
+        '''
+    }
+}
 
         stage('Verify Backend') {
             steps {
